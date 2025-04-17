@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_14/components/AuthScreen.dart';
+import 'package:flutter_application_14/components/HomeScreen.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -14,6 +15,39 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final TextEditingController FirstName = TextEditingController();
+    final TextEditingController LastName = TextEditingController();
+    final TextEditingController Phone = TextEditingController();
+    final TextEditingController Password = TextEditingController();
+
+    bool _Validate = true;
+
+    bool _validatePhone(String value) {
+      String pattern = r'^[0-9]{10}$';
+      RegExp regExp = RegExp(pattern);
+      return regExp.hasMatch(value);
+    }
+
+    Future<void> _register() async {
+     setState(() {
+       _Validate = _validatePhone(Phone.text);
+     });
+     if (!_Validate) {
+       ScaffoldMessenger.of(context).showSnackBar(
+         SnackBar(
+           content: Text('Please enter a valid phone number'),
+           backgroundColor: Colors.red,
+         ),
+       );
+     } else {
+       Navigator.push(
+         context,
+         MaterialPageRoute(
+           builder: (context) => HomeScreen(),
+         ),
+       );
+     }
+    }
     return Scaffold(
       body: Container(
         child: Column(
@@ -24,7 +58,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               decoration: BoxDecoration(
                 image: DecorationImage(
                   image: NetworkImage(
-                    'https://sdmntpreastus2.oaiusercontent.com/files/00000000-5300-61f6-8075-c70165802640/raw?se=2025-04-16T19%3A57%3A04Z&sp=r&sv=2024-08-04&sr=b&scid=35419bc9-6d64-570a-b579-2cee7fe67221&skoid=3f3a9132-9530-48ef-96b7-fee5a811733f&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2025-04-16T12%3A58%3A57Z&ske=2025-04-17T12%3A58%3A57Z&sks=b&skv=2024-08-04&sig=FsSWJaNgcUJq6e5RiB4DUzQgSmjLc8YxUtKqR4gM5FA%3D',
+                    'https://sdmntpreastus2.oaiusercontent.com/files/00000000-5300-61f6-8075-c70165802640/raw?se=2025-04-17T07%3A32%3A35Z&sp=r&sv=2024-08-04&sr=b&scid=a8c6e932-5274-580f-8c8d-184747c010eb&skoid=365eb242-95ba-4335-a618-2c9f8f766a86&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2025-04-16T23%3A39%3A53Z&ske=2025-04-17T23%3A39%3A53Z&sks=b&skv=2024-08-04&sig=hwFD6twXNLZUraQhcFQoGdCc2fInx21JywQ0Q66NyC4%3D',
                   ),
                   fit: BoxFit.cover,
                 ),
@@ -74,7 +108,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         ),
                       ),
                       SizedBox(width: 5),
-                      Text('Login in', style: TextStyle(color: Colors.white)),
+                      InkWell(
+                        onTap: () {
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => AuthScreen()));
+                        },
+                        child: Text('Login in', style: TextStyle(color: Colors.white))),
                     ],
                   ),
                 ],
@@ -147,8 +185,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                     SizedBox(height: 15),
                     TextField(
+                      controller: Phone,
                       decoration: InputDecoration(
-                        suffix: Icon(Icons.phone_android, size: 20),
+                        suffixIcon: Icon(Icons.phone_android, size: 20),
                         hintText: 'Type Phone Number',
                         filled: true,
                         fillColor: const Color.fromARGB(0, 255, 255, 255),
@@ -176,7 +215,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     TextField(
                       obscureText: _visibility,
                       decoration: InputDecoration(
-                        suffix: IconButton(
+                        suffixIcon: IconButton(
                           onPressed: () {
                             setState(() {
                               _visibility = !_visibility;
@@ -212,7 +251,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => RegisterScreen(),
+                                builder: (context) => HomeScreen(),
                               ),
                             );
                           },
