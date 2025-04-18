@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_14/components/AuthScreen.dart';
+import 'package:flutter_application_14/components/CatalogScreen.dart';
 import 'package:flutter_application_14/components/RegisterScreen.dart';
 
 void main() {
@@ -17,6 +18,7 @@ class MainApp extends StatelessWidget {
       routes: {
         '/': (context) => AuthScreen(),
         '/register': (context) => RegisterScreen(),
+        '/home': (context) => CatalogScreen(token: '',),
       },
     );
   }

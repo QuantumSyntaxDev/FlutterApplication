@@ -1,7 +1,9 @@
 import 'dart:math';
-
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_application_14/Services/API.dart';
 import 'package:flutter_application_14/components/AuthScreen.dart';
+import 'package:flutter_application_14/components/CatalogScreen.dart';
 import 'package:flutter_application_14/components/RegisterScreen.dart';
 
 class LoginSceen extends StatefulWidget {
@@ -15,6 +17,32 @@ class _RegisterScreenState extends State<LoginSceen> {
   /// Variables
   bool _visibility = false;
 
+  // Котроллеры для текстовых полей
+
+  final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
+  Future<void> _LoginMetod() async {
+    final response = await Api.postany('/login', {
+      'phone': _phoneController.text,
+      'password': _passwordController.text,
+    });
+    // Проверка на наличие токена в ответе
+    if (response != null){
+      // Если токен есть, то переходим на главную страницу
+      final token = response['assessToken'];
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => CatalogScreen(
+            // передаем токен в главную страницу
+            token: token,
+          ),
+        ),
+      );
+    } 
+    ;
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -26,9 +54,7 @@ class _RegisterScreenState extends State<LoginSceen> {
               height: 220,
               decoration: BoxDecoration(
                 image: DecorationImage(
-                  image: NetworkImage(
-                    'https://sdmntpreastus2.oaiusercontent.com/files/00000000-5300-61f6-8075-c70165802640/raw?se=2025-04-17T08%3A38%3A02Z&sp=r&sv=2024-08-04&sr=b&scid=4baa10e0-aa71-5912-8f57-3c70325a68a6&skoid=a3336399-497e-45e5-8f28-4b88ecca3d1f&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2025-04-16T21%3A26%3A39Z&ske=2025-04-17T21%3A26%3A39Z&sks=b&skv=2024-08-04&sig=Q2flXmyf4rhSr6BOJ5zapbw6ik/eUW4yqHfmFPUoN4c%3D',
-                  ),
+                  image: AssetImage('assets/images/background.png'),
                   fit: BoxFit.cover,
                 ),
               ),
@@ -41,7 +67,7 @@ class _RegisterScreenState extends State<LoginSceen> {
                         onPressed: () {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(
+                            CupertinoPageRoute(
                               builder: (context) => AuthScreen(),
                             ),
                           );
@@ -78,15 +104,19 @@ class _RegisterScreenState extends State<LoginSceen> {
                       ),
                       SizedBox(width: 5),
                       InkWell(
-                        onTap: (){
+                        onTap: () {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(
+                            CupertinoPageRoute(
                               builder: (context) => RegisterScreen(),
                             ),
                           );
                         },
-                        child: Text('Sign Up', style: TextStyle(color: Colors.white))),
+                        child: Text(
+                          'Sign Up',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ),
                     ],
                   ),
                 ],
@@ -108,6 +138,7 @@ class _RegisterScreenState extends State<LoginSceen> {
                     ),
                     SizedBox(height: 15),
                     TextField(
+                      controller: _phoneController,
                       decoration: InputDecoration(
                         suffixIcon: Icon(Icons.phone_android, size: 20),
                         hintText: 'Type Phone Number',
@@ -135,6 +166,7 @@ class _RegisterScreenState extends State<LoginSceen> {
                     ),
                     SizedBox(height: 15),
                     TextField(
+                      controller: _passwordController,
                       obscureText: _visibility,
                       decoration: InputDecoration(
                         suffixIcon: IconButton(
@@ -170,12 +202,7 @@ class _RegisterScreenState extends State<LoginSceen> {
                       height: 50,
                       child: ElevatedButton(
                         onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => AuthScreen(),
-                            ),
-                          );
+                          _LoginMetod();
                         },
                         child: Text(
                           'Login',
